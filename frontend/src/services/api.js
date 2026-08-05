@@ -1,0 +1,22 @@
+import axios from 'axios';
+
+const API = axios.create({
+  baseURL: '/api',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+// Attach JWT token to requests if present in localStorage
+API.interceptors.request.use(
+  (config) => {
+    const user = JSON.parse(localStorage.getItem('hackathon_user'));
+    if (user && user.token) {
+      config.headers.Authorization = `Bearer ${user.token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+export default API;
